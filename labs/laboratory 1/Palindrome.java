@@ -1,15 +1,14 @@
 // finds palindromes
 class Palindrome {
   public static void main(String[] args) {
-    String palindromes = "Palindromes: ";
-
+    Boolean bool = true;
     for (String arg : args) {
-      if (isPalindrome(arg)) {
-        palindromes += arg + " ";
+      if (!isPalindrome(arg)) {
+        bool = false;
       }
     }
 
-    System.out.println(palindromes);
+    System.out.println(bool);
   }
 
   // reverses string
