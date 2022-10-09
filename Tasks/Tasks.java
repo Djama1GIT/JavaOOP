@@ -1,5 +1,3 @@
-import com.sun.org.apache.xerces.internal.impl.dv.util.HexBin;
-
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
