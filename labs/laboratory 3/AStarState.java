@@ -13,9 +13,9 @@ public class AStarState
   /** This is a reference to the map that the A* algorithm is navigating. **/
   private Map2D map;
 
-  private HashMap<Integer, Waypoint> openWaypoints = new HashMap<>();
+  private HashMap<Location, Waypoint> openWaypoints = new HashMap<Location, Waypoint>();
 
-  private HashMap<Integer, Waypoint> closeWaypoints = new HashMap<>();
+  private HashMap<Location, Waypoint> closeWaypoints = new HashMap<Location, Waypoint>();
 
 
   /**
@@ -41,16 +41,16 @@ public class AStarState
    * returns <code>null</code>.
    **/
   public Waypoint getMinOpenWaypoint() {
-    if (openWaypoints.size() == 0) return null;
+    /* Если в "открытом" наборе нет вершин, функция возвращает NULL.
+    Эта функция должна проверить все вершины в наборе открытых вершин,
+    и после этого она должна вернуть ссылку на вершину с наименьшей общей
+    стоимостью */
+    var minCost = Float.MAX_VALUE;
+    Waypoint minWaypoint = null;
 
-    ArrayList<Waypoint> waypoints = new ArrayList<>(openWaypoints.values());
-    double minCost = waypoints.get(0).getTotalCost();
-    Waypoint minWaypoint = waypoints.get(0);
-    int length = waypoints.size();
-
-    for (int i = 0; i < length; i++) {
-      if (waypoints.get(i).getTotalCost() < minCost) {
-        minWaypoint = waypoints.get(i);
+    for (var minW : openWaypoints.entrySet()) {
+      if (minW.getValue().getTotalCost() < minCost) {
+        minWaypoint = minW.getValue();
         minCost = minWaypoint.getTotalCost();
       }
     }
@@ -67,14 +67,24 @@ public class AStarState
    * if</em> the new waypoint's "previous cost" value is less than the current
    * waypoint's "previous cost" value.
    **/
+  /*
+  Если в наборе «открытых вершин» в настоящее время нет вершины
+  для данного местоположения, то необходимо просто добавить новую вершину.
+   Если в наборе «открытых вершин» уже есть вершина для этой
+  локации, добавьте новую вершину только в том случае, если стоимость пути до
+  новой вершины меньше стоимости пути до текущей. (Убедитесь, что
+  используете не общую стоимость.) Другими словами, если путь через новую
+  вершину короче, чем путь через текущую вершину, замените текущую вершину
+  на новую
+ */
   public boolean addOpenWaypoint(Waypoint newWP)
   {
-    if (openWaypoints.get(newWP.getLocation().hashCode()) == null) {
-      openWaypoints.put(newWP.getLocation().hashCode(), newWP);
+    if (openWaypoints.get(newWP.getLocation()) == null) {
+      openWaypoints.put(newWP.getLocation(), newWP);
       return false;
     } else {
-      if (openWaypoints.get(newWP.getLocation().hashCode()).getPreviousCost() > newWP.getPreviousCost()) {
-        openWaypoints.put(newWP.getLocation().hashCode(), newWP);
+      if (openWaypoints.get(newWP.getLocation()).getPreviousCost() > newWP.getPreviousCost()) {
+        openWaypoints.put(newWP.getLocation(), newWP);
         return true;
       }
     }
@@ -84,7 +94,7 @@ public class AStarState
 
 
   /** Returns the current number of open waypoints. **/
-  public int numOpenWaypoints()
+  public int numOpenWaypoints() /* Этот метод возвращает количество точек в наборе открытых вершин. */
   {
     return openWaypoints.size();
   }
@@ -94,7 +104,16 @@ public class AStarState
    * This method moves the waypoint at the specified location from the
    * open list to the closed list.
    **/
-  public void closeWaypoint(int loc)
+  /*
+    Эта функция перемещает вершину из набора «открытых вершин» в набор
+    «закрытых вершин». Так как вершины обозначены местоположением, метод
+    принимает местоположение вершины.
+    Процесс должен быть простым:
+     Удалите вершину, соответствующую указанному местоположению
+    из набора «открытых вершин».
+     Добавьте вершину, которую вы удалили, в набор закрытых вершин.
+    Ключом должно являться местоположение точки.*/
+  public void closeWaypoint(Location loc)
   {
     closeWaypoints.put(loc, openWaypoints.remove(loc));
   }
@@ -103,7 +122,14 @@ public class AStarState
    * Returns true if the collection of closed waypoints contains a waypoint
    * for the specified location.
    **/
-  public boolean isLocationClosed(int loc)
+
+  /*
+  Эта функция должна возвращать значение true, если указанное
+  местоположение встречается в наборе закрытых вершин, и false в противном
+  случае. Так как закрытые вершины хранятся в хэш-карте с расположениями в
+  качестве ключевых значений, данный метод достаточно просто в реализации.
+  */
+  public boolean isLocationClosed(Location loc)
   {
     return closeWaypoints.containsKey(loc);
   }

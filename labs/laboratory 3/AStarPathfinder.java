@@ -57,7 +57,7 @@ public class AStarPathfinder
 
       // Finally, move this location from the "open" list to the "closed"
       // list.
-      state.closeWaypoint(best.getLocation().hashCode());
+      state.closeWaypoint(best.getLocation());
     }
 
     return finalWaypoint;
@@ -89,7 +89,7 @@ public class AStarPathfinder
 
         // If this location happens to already be in the "closed" set
         // then continue on with the next location.
-        if (state.isLocationClosed(nextLoc.hashCode()))
+        if (state.isLocationClosed(nextLoc))
           continue;
 
         // Make a waypoint for this "next location."
