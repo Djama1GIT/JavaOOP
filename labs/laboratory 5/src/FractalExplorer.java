@@ -26,27 +26,27 @@ public class FractalExplorer {
     public void createAndShowGUI() {
         display.setLayout(new BorderLayout());
 
-        JButton resetButton = new JButton("Reset");
+        JButton resetButton = new JButton("Reset"); // добавлем кнопку ресет
         Resetter resetHandler = new Resetter();
         resetButton.addActionListener(resetHandler);
 
-        JButton saveButton = new JButton("Save");
+        JButton saveButton = new JButton("Save"); // и сейв
         Saver saveHandler = new Saver();
         saveButton.addActionListener(saveHandler);
 
         Clicker click = new Clicker();
         display.addMouseListener(click);
 
-        FractalGenerator mandelbrotFractal = new Mandelbrot();
+        FractalGenerator mandelbrotFractal = new Mandelbrot(); // как в 4 лабе, но теперь три генератора
         FractalGenerator tricornFractal = new Tricorn();
         FractalGenerator burningShipFractal = new BurningShip();
 
-        JComboBox comboBox = new JComboBox();
+        JComboBox comboBox = new JComboBox(); // создаем comboBox
 
-        comboBox.addItem(mandelbrotFractal);
+        comboBox.addItem(mandelbrotFractal); // и выборка через него фракталов идет
         comboBox.addItem(tricornFractal);
-        comboBox.addItem(burningShipFractal);
-
+        comboBox.addItem(burningShipFractal); // тут типа вызываются эжти туСтринг
+        // в кажом файле фрактала есть метод toString(по методичке) для нормального отображения всего этого дела
         Chooser fractalChooser = new Chooser();
         comboBox.addActionListener(fractalChooser);
 
@@ -54,16 +54,16 @@ public class FractalExplorer {
 
         JPanel panel = new JPanel();
         panel.add(label);
-        panel.add(comboBox);
-
+        panel.add(comboBox); // по методичке создаем JPanel и добавляем в него JLabel и JComboBox
+        //то была верхняя, теперь нижняя панель
         JPanel myBottomPanel = new JPanel();
-        myBottomPanel.add(saveButton);
+        myBottomPanel.add(saveButton); // на ней сейв и ресет
         myBottomPanel.add(resetButton);
 
-        JFrame myFrame = new JFrame("Fractal Explorer");
+        JFrame myFrame = new JFrame("Fractal Explorer"); // создаем окно
 
-        myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        myFrame.add(myBottomPanel, BorderLayout.SOUTH);
+        myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // и суем туда сё, описываем тута закрывание и ниже как в прошлой лабе
+        myFrame.add(myBottomPanel, BorderLayout.SOUTH); // располагаем как нпаисано в методичке
         myFrame.add(display, BorderLayout.CENTER);
         myFrame.add(panel, BorderLayout.NORTH);
 
@@ -98,7 +98,7 @@ public class FractalExplorer {
         display.repaint();
     }
 
-    private class Resetter implements ActionListener {
+    private class Resetter implements ActionListener { // ресеттер как в прошлой лабе
         public void actionPerformed(ActionEvent e) {
             if (e.getActionCommand().equals("Reset")) {
                 fractal.getInitialRange(range);
@@ -107,7 +107,7 @@ public class FractalExplorer {
         }
     }
 
-    private class Chooser implements ActionListener {
+    private class Chooser implements ActionListener { // выборка фракталов
         public void actionPerformed(ActionEvent e) {
             Object source = e.getSource();
             if (source instanceof JComboBox) {
@@ -122,10 +122,11 @@ public class FractalExplorer {
         }
     }
 
-    private class Saver implements ActionListener {
+    private class Saver implements ActionListener { // сейвер оаоаоаоаоаоаоаоаоаоаоаоаоаа
         public void actionPerformed(ActionEvent e) {
-            if (e.getActionCommand().equals("Save")) {
-                JFileChooser fileChooser = new JFileChooser();
+            if (e.getActionCommand().equals("Save")) { // нажал сохранить -> сохранил. xD
+                JFileChooser fileChooser = new JFileChooser(); // почти все в методичке расписано
+                ////////////////
 
                 FileFilter extensionFilter = new FileNameExtensionFilter(
                         "PNG",
@@ -135,29 +136,29 @@ public class FractalExplorer {
                 fileChooser.setFileFilter(extensionFilter);
 
                 fileChooser.setAcceptAllFileFilterUsed(false);
+                ////////////////// код напрямую из методички
+                int userSelection = fileChooser.showSaveDialog(display); // английским понятным написано, showDialog
+                //открывает окно сохранения
+                if (userSelection == JFileChooser.APPROVE_OPTION) { // если все нормально выбрал, то идем дальше
+                    java.io.File file = fileChooser.getSelectedFile(); // файл
+                    String filePath = file.getPath(); // путь к файлу.... логично
 
-                int userSelection = fileChooser.showSaveDialog(display);
-
-                if (userSelection == JFileChooser.APPROVE_OPTION) {
-                    java.io.File file = fileChooser.getSelectedFile();
-                    String filePath = file.getPath();
-
-                    if (!filePath.contains(".png")) file = new File(filePath + ".png");
+                    if (!filePath.contains(".png")) file = new File(filePath + ".png"); // должен быть пнг, тут проверяется
                     try {
-                        BufferedImage displayImage = display.getImage();
-                        javax.imageio.ImageIO.write(displayImage, "png", file);
-                    } catch (Exception exception) {
-                        JOptionPane.showMessageDialog(display,
+                        BufferedImage displayImage = display.getImage(); // получаем изображение
+                        javax.imageio.ImageIO.write(displayImage, "png", file); // записываем изображение
+                    } catch (Exception exception) { // если случилось нехорошее, то
+                        JOptionPane.showMessageDialog(display, // отображаем ошибку
                                 exception.getMessage(), "Cannot Save Image",
                                 JOptionPane.ERROR_MESSAGE);
                     }
                 }
-                else return;
+                else return; // если не выбрал то не сохраняем, логично
             }
         }
     }
 
-    private class Clicker extends MouseAdapter {
+    private class Clicker extends MouseAdapter { // аналогично с прошлой лабой
         @Override
         public void mouseClicked(MouseEvent e) {
             int x = e.getX();
@@ -174,9 +175,9 @@ public class FractalExplorer {
         }
     }
 
-    public static void main(String[] args)
+    public static void main(String[] args) // аналог
     {
-        FractalExplorer displayExplorer = new FractalExplorer(600);
+        FractalExplorer displayExplorer = new FractalExplorer(800);
         displayExplorer.createAndShowGUI();
         displayExplorer.drawFractal();
     }

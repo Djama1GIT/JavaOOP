@@ -1,5 +1,7 @@
 import java.awt.geom.Rectangle2D;
+//2
 
+//дальше надо написать код для вычисления фрактала мандельборта, скачиваем это файл, от него будут идти наследование генераторов фракталов
 
 /**
  * This class provides the common interface and operations for fractal
