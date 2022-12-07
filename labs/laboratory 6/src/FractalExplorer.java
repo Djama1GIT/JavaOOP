@@ -6,7 +6,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-
+// все с прошлой лабыыыыыыы................
 public class FractalExplorer {
     private int displaySize;
 
@@ -16,7 +16,7 @@ public class FractalExplorer {
 
     private Rectangle2D.Double range;
 
-    private int rowRemaining;
+    private int rowRemaining; // new
 
     private JButton saveButton;
     private JButton resetButton;
@@ -81,18 +81,18 @@ public class FractalExplorer {
         myFrame.setResizable(false);
     }
 
-    private void drawFractal() {
-        enableUI(false);
+    private void drawFractal() { // new
+        enableUI(false); // выключить кнопки
 
-        rowRemaining = displaySize;
+        rowRemaining = displaySize; // количество строк = кол-ву пикселей
 
-        for (int y = 0; y < displaySize; y++){
-            FractalWorker drawRow = new FractalWorker(y);
-            drawRow.execute();
+        for (int y = 0; y < displaySize; y++){ // прорисовываем каждую строку
+            FractalWorker drawRow = new FractalWorker(y); // строка y обрабатываься будет
+            drawRow.execute(); // запуск фонового потока для отрисовки строки drawRow
         }
     }
 
-    private void enableUI(boolean value) {
+    private void enableUI(boolean value) { // включает и выключает UI
         comboBox.setEnabled(value);
         resetButton.setEnabled(value);
         saveButton.setEnabled(value);
@@ -175,16 +175,17 @@ public class FractalExplorer {
             drawFractal();
         }
     }
+////1111начинаем с этоваЫ
+    private class FractalWorker extends SwingWorker<Object, Object> { // вся строка с методички
+        int row; // y номер строки
+        int[] rgbValues; // значения цветов в строке
 
-    private class FractalWorker extends SwingWorker<Object, Object> {
-        int row;
-        int[] rgbValues;
-
-        private FractalWorker(int row) { this.row = row; }
+        private FractalWorker(int row) { this.row = row; }// конструктор получает координату y(row) и сохраняет ее
 
         @Override
-        protected Object doInBackground() {
-            rgbValues = new int[displaySize];
+        protected Object doInBackground() { // этот метод отвечает за выполнение длительной задачи в фоне, код взят
+            //почти полностью из 5 лабы
+            rgbValues = new int[displaySize]; // массив пикселей цветов в который сё суем
 
                 for (int x = 0; x < rgbValues.length; x++) {
                     double xCoord = FractalGenerator.getCoord(range.x,
@@ -201,27 +202,28 @@ public class FractalExplorer {
                         float hue = 0.5f + (float) iteration / 50;
                         int rgbColor = Color.HSBtoRGB(hue, 1f, 1f);
 
-                        rgbValues[x] = rgbColor;
+                        rgbValues[x] = rgbColor; // вместо рисовки суем в массив
                     }
                 }
-            return null;
-        }
+            return null; // тут тоже отличается от прошлой лабы, не рисуем ничего
+        } //// идем в начало кода
 
-        protected void done() {
+        protected void done() { // вызывается при завершении фоновой задачи, тут всё(строку,
+            // заметно кстати как происходит) и прорисовывем
             for (int x = 0; x < rgbValues.length; x++) {
                 display.drawPixel(x, row, rgbValues[x]);
             }
 
-            display.repaint(0, 0, row, displaySize, 1);
+            display.repaint(0, 0, row, displaySize, 1); // перерисовка стрки
 
-            rowRemaining--;
-            if (rowRemaining == 0) enableUI(true);
+            rowRemaining--; // - кол-во оставшихся строк
+            if (rowRemaining == 0) enableUI(true); // если все прорисовали, то включить кнопки
         }
     }
 
-    public static void main(String[] args)
+    public static void main(String[] args) // как в прошлой лабе
     {
-        FractalExplorer displayExplorer = new FractalExplorer(600);
+        FractalExplorer displayExplorer = new FractalExplorer(800);
         displayExplorer.createAndShowGUI();
         displayExplorer.drawFractal();
     }
