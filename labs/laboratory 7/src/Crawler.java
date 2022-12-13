@@ -19,7 +19,11 @@ public class Crawler {
         LinkedList<UrlDepthPair> links = getAllLinks(baseUrl, currentDepth);
 
         for (UrlDepthPair link: links) {
+//            if (!link.realUrl.toString().startsWith("http://")){
+//                link.realUrl.set();
+//            }
             startParsing(link.realUrl, maxDepth, currentDepth + 1);
+//            System.out.print(link.realUrl);
         }
 
         proccessed.addAll(links);
@@ -62,16 +66,38 @@ public class Crawler {
             String htmlLine;
 
             Pattern patternURL = Pattern.compile(
-                    "(href=\"http|href=\"https)://([\\w_-]+(?:(?:\\.[\\w_-]+)+))([\\w.,@?^=%&:/~+#-]*[\\w@?^=%&/~+#-])?"
+                    "((http:\\/\\/)([\\w-]{1,32}\\.[\\w-]{1,32}|localhost)[^\\s@]*)\""
+//            "(http://)?([\\w_-]+(?:(?:\\.[\\w_-]+)+))([\\w.,@?^=%&:/~+#-]*[\\w@?^=%&/~+#-])?"
             );
 
             while ((htmlLine = reader.readLine()) != null) {
                 Matcher matcherURL = patternURL.matcher(htmlLine);
+//                System.out.println(hostname);
+//                System.out.println(url);
+//                System.out.println(writer);
+//                System.out.println(reader);
+//                System.out.println(htmlLine);
+//                System.out.println(matcherURL);
                 while (matcherURL.find()) {
-                    String link = htmlLine.substring(matcherURL.start() + 6,
-                            matcherURL.end());
+//                    System.out.println(1);
+                    String link = htmlLine.substring(matcherURL.start(),
+                            matcherURL.end()-1);
+//                    System.out.println(link);
+                    /*
+                    * if links.contains(UrlDepthPair(link,depth(или любой меньше)))
+                    * изменить
+                    * иначе создать
+                    * */
+//                    for(int i = depth; i>0; i--){
+//                    for(int i = 0; i< links.length(); i++){
+//                        if (links){
+//                            System.out.print(123);
+//                            System.out.println(links);
+//                        }
+//                    }
 
-                    links.add(new UrlDepthPair(link, depth));
+//                    System.out.println(links);
+                    links.add(new UrlDepthPair(link, depth)); ///////////////change
 //                    if (links.size() >= 10) return links;
                 }
             }
@@ -81,7 +107,6 @@ public class Crawler {
         } catch (Exception e) {
             System.out.print(e.getMessage());
             System.out.print(Arrays.toString(e.getStackTrace()));
-
             return new LinkedList<>();
         }
     }
