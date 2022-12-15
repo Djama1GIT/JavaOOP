@@ -4,40 +4,63 @@ import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 class Module6 {
+    /*Число Белла - это количество способов, которыми массив из n элементов может
+быть разбит на непустые подмножества. Создайте функцию, которая принимает
+число n и возвращает соответствующее число Белла.*/
     public static int bell(int n) {
-        int[][] bellTriangle = new int[n+1][n+1];
-        bellTriangle[0][0] = 1;
-
-        for (int i=1; i<=n; i++) {
-            bellTriangle[i][0] = bellTriangle[i-1][i-1];
-
-            for (int j=1; j<=i; j++) {
-                bellTriangle[i][j] = bellTriangle[i-1][j-1] + bellTriangle[i][j-1];
+        int[][] styrling = new int[n + 1][n + 1];//вычисляем числа стирлинга
+        for (int i = 0; i < n + 1; i++) {
+            for (int j = 0; j < n + 1; j++) {
+                if (j > i) styrling[i][j] = 0;
+                else if (i == j) styrling[i][j] = 1;
+                else if (i == 0 || j == 0) styrling[i][j] = 0;
+                else styrling[i][j] = j * styrling[i - 1][j] + styrling[i - 1][j - 1];
             }
         }
-
-        return bellTriangle[n][0];
+        int bell = 0;
+        for (int i = 0; i < n + 1; i++) {
+            bell += styrling[n][i];
+        }
+        return bell;
     }
-
+/*В «поросячей латыни» (свинский латинский) есть два очень простых правила:
+– Если слово начинается с согласного, переместите первую букву (буквы) слова до
+гласного до конца слова и добавьте «ay» в конец.
+have ➞ avehay
+cram ➞ amcray
+take ➞ aketay
+cat ➞ atcay
+shrimp ➞ impshray
+trebuchet ➞ ebuchettray
+– Если слово начинается с гласной, добавьте "yay" в конце слова.
+ate ➞ ateyay
+apple ➞ appleyay
+oaken ➞ oakenyay
+eagle ➞ eagleyay
+Напишите две функции, чтобы сделать переводчик с английского на свинский латинский.
+Первая функция translateWord (word) получает слово на английском и возвращает это
+слово, переведенное на латинский язык. Вторая функция translateSentence (предложение)
+берет английское предложение и возвращает это предложение, переведенное на латинский
+язык.*/
     public static String translateWord(String word) {
         String result = word;
-
-        if (String.valueOf(result.charAt(0)).toLowerCase().matches("[aeiouy]")) {
+        if (String.valueOf(result.charAt(0)).toLowerCase().matches("[aeiouy]")) { // первое буква - гласная
             result += "yay";
         } else {
             result = result.toLowerCase();
-            String newWord = result.split("[aeiouy]")[0];
-            result = result.replaceFirst(newWord,"") + newWord + "ay";
+            String newWord = result.split("[aeiouy]")[0];//первую согласную(-е) переносим
+            result = result.replaceFirst(newWord,"") + newWord + "ay";//до конца слова + "ay"
             result = String.valueOf(result.charAt(0)).toUpperCase() + result.substring(1);
         }
-
         return result;
     }
-
+/*Вторая функция translateSentence (предложение)
+берет английское предложение и возвращает это предложение, переведенное на латинский
+язык.*/
     public static String translateSentence(String str) {
-        String[] tokens = str.split(" ");
+        String[] tokens = str.split(" ");//разделяем слова
 
-        for (int i = 0; i < tokens.length; i++) {
+        for (int i = 0; i < tokens.length; i++) {//проходимся по всем словам
             if (String.valueOf(tokens[i].charAt(0)).toLowerCase().matches("[aeiouy]")) {
                 if (String.valueOf(tokens[i].charAt(tokens[i].length() - 1)).matches("[!?.,:;]")) {
                     tokens[i] = tokens[i].substring(0, tokens[i].length() - 1) + "yay" + tokens[i].charAt(tokens[i].length() - 1);
@@ -45,21 +68,21 @@ class Module6 {
                     tokens[i] += "yay";
                 }
             } else {
-                if (String.valueOf(tokens[i].charAt(0)).matches("[QWRTPSDFGHJKLZXCVBNM]")) {
+                if (String.valueOf(tokens[i].charAt(0)).matches("[QWRTPSDFGHJKLZXCVBNM]")) {//если слово начинается с больш буквы
                     if (String.valueOf(tokens[i].charAt(tokens[i].length() - 1)).matches("[!?.,:;]")) {
-                        char mark = tokens[i].charAt(tokens[i].length() - 1);
-                        tokens[i] = tokens[i].substring(0, tokens[i].length() - 1);
-                        tokens[i] = tokens[i].toLowerCase();
-                        String newWord = tokens[i].split("[aeiouy]")[0];
-                        tokens[i] = tokens[i].replaceFirst(newWord,"") + newWord + "ay";
+                        char mark = tokens[i].charAt(tokens[i].length() - 1);/////////////^^^^^^^^^
+                        tokens[i] = tokens[i].substring(0, tokens[i].length() - 1);//without^^^^^
+                        tokens[i] = tokens[i].toLowerCase();//в нижний регистр
+                        String newWord = tokens[i].split("[aeiouy]")[0];// первую согласную переносим
+                        tokens[i] = tokens[i].replaceFirst(newWord,"") + newWord + "ay"; //до конца слова + ау
                         tokens[i] = String.valueOf(tokens[i].charAt(0)).toUpperCase() + tokens[i].substring(1) + mark;
-                    } else {
+                    } else { //^^^ первую гласную в верхний регистр + остальное слово + mark
                         tokens[i] = tokens[i].toLowerCase();
                         String newWord = tokens[i].split("[aeiouy]")[0];
                         tokens[i] = tokens[i].replaceFirst(newWord,"") + newWord + "ay";
                         tokens[i] = String.valueOf(tokens[i].charAt(0)).toUpperCase() + tokens[i].substring(1);
                     }
-                } else {
+                } else {//почти тоже самое, только букву большой не делаем
                     if (String.valueOf(tokens[i].charAt(tokens[i].length() - 1)).matches("[!?.,:;]")) {
                         char mark = tokens[i].charAt(tokens[i].length() - 1);
                         tokens[i] = tokens[i].substring(0, tokens[i].length() - 1);
@@ -76,84 +99,85 @@ class Module6 {
             }
         }
 
-        return String.join(" ", tokens);
+        return String.join(" ", tokens);//выводим предложение
     }
-
+/*Учитывая параметры RGB (A) CSS, определите, является ли формат принимаемых
+значений допустимым или нет. Создайте функцию, которая принимает строку
+(например, " rgb(0, 0, 0)") и возвращает true, если ее формат правильный, в
+противном случае возвращает false.*/
     public static boolean validColor(String str) {
         if (!str.startsWith("rgb") && !str.startsWith("rgba")) {
             return false;
         }
-
-        String[] numbers = str.split("\\(")[1].split(",");
-        numbers[numbers.length - 1] = numbers[numbers.length - 1].substring(0, numbers[numbers.length - 1].length() - 1);
-
-        if (str.startsWith("rgb") && !str.startsWith("rgba")) {
-            if (str.contains(".")) {
-                return false;
-            }
-
+        String[] numbers = str.split("\\(")[1].split(","); // [0] [0] [0)]
+        numbers[numbers.length - 1] = numbers[numbers.length - 1].substring(0, numbers[numbers.length - 1].length() - 1);// [0][0][0]
+        if (str.startsWith("rgb") && !str.startsWith("rgba")) {//rgb
+            if (str.contains(".")) return false;//проверка что нет нецелых чисел
             for (int i = 0; i < numbers.length; i ++) {
-                if (numbers[i].trim().equals("")) {
-                    return false;
-                }
-
+                if (numbers[i].trim().equals("")) return false; //проверка на пустоту
                 int num = Integer.parseInt(numbers[i].trim());
-
-                if (!(num >= 0 && num <= 255)) {
-                    return false;
-                }
+                if (!(num >= 0 && num <= 255)) return false;
             }
-        } else {
+        } else {//rgba
             for (int i = 0; i < numbers.length - 1; i ++) {
-                if (numbers[i].trim().equals("")) {
-                    return false;
-                }
-
+                if (numbers[i].trim().equals("")) return false;// проверка на пустоту
                 int num = Integer.parseInt(numbers[i].trim());
-
-                if (!(num >= 0 && num <= 255)) {
-                    return false;
-                }
+                if (!(num >= 0 && num <= 255)) return false;
             }
-
-            if (numbers[3].trim().equals("")) return false;
-
+            if (numbers[3].trim().equals("")) return false; // проверка на пустоту
             double num = Double.parseDouble(numbers[3].trim());
-
-            return num >= 0 && num <= 1;
+            return num >= 0 && num <= 1; // double проверка
         }
-
         return true;
     }
-
+/*Создайте функцию, которая принимает URL (строку), удаляет дублирующиеся
+параметры запроса и параметры, указанные во втором аргументе (который будет
+необязательным массивом).*/
     public static String stripUrlParams(String url, String ...paramsToStrip) {
-        String str = "";
-
-        if (!url.contains("?"))
+        String str;
+        if (!url.contains("?"))//нет аргументов - сразу возврат
             return url;
         else {
-            str = url.substring(url.indexOf("?") + 1);
-            url = url.substring(0, url.indexOf("?") + 1);
+            str = url.substring(url.indexOf("?") + 1);//get
+            url = url.substring(0, url.indexOf("?") + 1);//url
         }
-
-        char[] params = str.toCharArray();
-        StringBuilder print = new StringBuilder();
-
-        for (char param : params) {
-            if (Character.isLetter(param))
-                if (!(print.toString().contains(String.valueOf(param)))) {
-                    if (paramsToStrip.length > 0) {
-                        for (String arg : paramsToStrip) {
-                            if (!(arg.contains(String.valueOf(param))))
-                                print.append(str, str.lastIndexOf(param), str.lastIndexOf(param) + 3).append("&");
-                        }
-                    }
-                    else
-                        print.append(str, str.lastIndexOf(param), str.lastIndexOf(param) + 3).append("&");
-                }
+        StringBuilder result = new StringBuilder();
+        HashMap<String, String> parameters = new HashMap<String, String>();
+        String[] params = str.split("&");
+        System.out.println(params);
+        for (String paam : params){
+            System.out.println(Integer.toString(123) + paam);
+            String[] paams = paam.split("=");
+            String param = paams[0];
+            String val = paams[1];
+            boolean bool = true;
+            for (String pts : paramsToStrip) if (pts.equals(param)) bool = false;
+            if (bool) parameters.put(param, val);
         }
-
-        return url + print.substring(0, print.length()-1);
+        String uurl = "";
+        parameters.forEach((parametr, value) -> {
+//            uurl=uurl+parametr+"="+value+"&"; /// тут ошибка
+        });
+        System.out.println(uurl);
+//        String[][] = new String
+//        String[] params = str.split
+//        char[] params = str.toCharArray();
+//        StringBuilder print = new StringBuilder();
+//        for (char param : params) {
+//            if (Character.isLetter(param))
+//                if (!(print.toString().contains(String.valueOf(param)))) {
+//                    if (paramsToStrip.length > 0) {
+//                        for (String arg : paramsToStrip) {
+//                            if (!(arg.contains(String.valueOf(param))))//&=f
+//                                print.append(str, str.lastIndexOf(param), str.lastIndexOf(param) + 3).append("&");
+//                        }
+//                    }
+//                    else
+//                        print.append(str, str.lastIndexOf(param), str.lastIndexOf(param) + 3).append("&");
+//                }
+//        }
+//        return url + print.substring(0, print.length()-1);
+        return "";
     }
 
     public static ArrayList<String> getHashTags(String str){
@@ -405,10 +429,10 @@ class Tasks6 {
         log("Модуль 6");
         log("************************************");
         log(Module6.bell(5));
-        log(Module6.translateWord("Do"));
+        log(Module6.translateWord("have"));
         log(Module6.translateSentence("I like to eat honey waffles."));
         log(Module6.validColor("rgba(0,0,0,0.123456789)"));
-        log(Module6.stripUrlParams("https://edabit.com", "b"));
+        log(Module6.stripUrlParams("https://edabit.com?a=2&b=3", "b"));
         log(Module6.getHashTags("Visualizing Science"));
         log(Module6.ulam(206));
         log(Module6.longestNonrepeatingSubstring("abcabcbb"));

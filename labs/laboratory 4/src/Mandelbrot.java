@@ -15,7 +15,7 @@ public class Mandelbrot extends FractalGenerator {
 
     public int numIterations(double x, double y) { // этот метод реализует итеративную функцию для фрактала мандаельборта
         ComplexNum cmplx = new ComplexNum(0, 0); // первое число реальная часть, вторая - мнимая
-        // нам предложили сделать отдельный класс - ясделяль
+        // нам предложили сделать отдельный класс - ясдел.яль
         int iterator = 0; // переменная итератор
 
         while (iterator < LIMIT && cmplx.getSquaredModule() < 4) { ///////////////////// ComplexNum след файл

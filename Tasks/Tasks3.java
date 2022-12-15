@@ -164,7 +164,7 @@ class Module3 {
     }
 }
 
-class Tasks {
+class Tasks3 {
     public static void log(String str) {
         System.out.println(str);
     }

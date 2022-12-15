@@ -1,5 +1,3 @@
-import com.sun.org.apache.xerces.internal.impl.dv.util.HexBin;
-
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -206,7 +204,7 @@ class Module4 {
     }
 }
 
-class Tasks {
+class Tasks4 {
     public static void log(String str) {
         System.out.println(str);
     }

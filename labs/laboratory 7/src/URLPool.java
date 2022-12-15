@@ -1,52 +1,48 @@
 import java.util.*;
 
-public class URLPool {
+public class URLPool {//пул URLов
     static boolean DEBUG = false;
-    private LinkedList<URLDepthPair> pendingURLs;
-    public LinkedList<URLDepthPair> processedURLs;
-    private ArrayList<String> seenURLs = new ArrayList<String>();
-    public int waitingThreads;
-    public int depth;
-    public URLPool(int dept) {
+    private LinkedList<URLDepthPair> pendingURLs;//лист ожидающих URLов
+    public LinkedList<URLDepthPair> processedURLs;//лист посещенных URLов
+    private ArrayList<String> seenURLs = new ArrayList<String>();//массив посеещенных URLов(просто ссылки, без глубины)
+    public int depth;//глубина
+    public URLPool(int dept) {//конструктор
         depth = dept;
-        waitingThreads = 0;
         pendingURLs = new LinkedList<URLDepthPair>();
         processedURLs = new LinkedList<URLDepthPair>();
     }
     public synchronized ArrayList<String> getSeenList() {
         return seenURLs;
-    }
-    public synchronized int getWaits() {
-        return waitingThreads;
-    }
+    }//геттер посещенных URLов
     public synchronized int size() {
         return pendingURLs.size();
-    }
-    public synchronized boolean put(URLDepthPair depthPair) {
+    }//геттер размера пула
+    public synchronized boolean put(URLDepthPair depthPair) {//метод добавления в пул пары url-глубина
         boolean added = false;
         if (depthPair.getDepth() <= depth) {
-            if(!seenURLs.contains(depthPair.getURL())) pendingURLs.addLast(depthPair);
-
+            if (!seenURLs.contains(depthPair.getURL()))//добавляем, если уже не посещали
+            {
+                pendingURLs.addLast(depthPair);
+                this.notify();
+            }
             added = true;
             if (DEBUG) System.out.println(depthPair);
-            if (DEBUG) System.out.println(waitingThreads);
-            if (waitingThreads > 0) waitingThreads--;
-            this.notify();
+            if (DEBUG) System.out.print("wt: ");
         } else { seenURLs.add(depthPair.getURL()); }
         return added;
     }
 
-    public synchronized URLDepthPair get() {
-        URLDepthPair myDepthPair = null;
+    public synchronized URLDepthPair get() {//метод get вытаскиват и возвращает один из URLов из пула
+        URLDepthPair myDepthPair = null;//с помощью него, так скажем, распределяются обязанности между потоками
         if (pendingURLs.size() == 0) {
-            waitingThreads+=1;
-            try { this.wait(); }
+            try { this.wait(100);}
             catch (InterruptedException e) { if (DEBUG) System.err.println("MalformedURLException: " + e.getMessage());
-                return null; } }
-
-        myDepthPair = pendingURLs.removeFirst();
-        seenURLs.add(myDepthPair.getURL());
-        processedURLs.add(myDepthPair);
+                return myDepthPair; } }
+        if (!(pendingURLs.size() == 0)){
+            myDepthPair = pendingURLs.removeFirst();
+            seenURLs.add(myDepthPair.getURL());
+            processedURLs.add(myDepthPair);
+        }
         return myDepthPair;
     }
 }
