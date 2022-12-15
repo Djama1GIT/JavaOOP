@@ -144,9 +144,7 @@ eagle ➞ eagleyay
         StringBuilder result = new StringBuilder();
         HashMap<String, String> parameters = new HashMap<String, String>();
         String[] params = str.split("&");
-        System.out.println(params);
         for (String paam : params){
-            System.out.println(Integer.toString(123) + paam);
             String[] paams = paam.split("=");
             String param = paams[0];
             String val = paams[1];
@@ -154,43 +152,26 @@ eagle ➞ eagleyay
             for (String pts : paramsToStrip) if (pts.equals(param)) bool = false;
             if (bool) parameters.put(param, val);
         }
-        String uurl = "";
+        StringBuilder get = new StringBuilder();
         parameters.forEach((parametr, value) -> {
-//            uurl=uurl+parametr+"="+value+"&"; /// тут ошибка
+            get.append(parametr+"="+value+"&");
         });
-        System.out.println(uurl);
-//        String[][] = new String
-//        String[] params = str.split
-//        char[] params = str.toCharArray();
-//        StringBuilder print = new StringBuilder();
-//        for (char param : params) {
-//            if (Character.isLetter(param))
-//                if (!(print.toString().contains(String.valueOf(param)))) {
-//                    if (paramsToStrip.length > 0) {
-//                        for (String arg : paramsToStrip) {
-//                            if (!(arg.contains(String.valueOf(param))))//&=f
-//                                print.append(str, str.lastIndexOf(param), str.lastIndexOf(param) + 3).append("&");
-//                        }
-//                    }
-//                    else
-//                        print.append(str, str.lastIndexOf(param), str.lastIndexOf(param) + 3).append("&");
-//                }
-//        }
-//        return url + print.substring(0, print.length()-1);
-        return "";
+        return url + get.substring(0, get.length()-1);
     }
-
+/*Напишите функцию, которая извлекает три самых длинных слова из заголовка
+газеты и преобразует их в хэштеги. Если несколько слов одинаковой длины,
+найдите слово, которое встречается первым.*/
     public static ArrayList<String> getHashTags(String str){
-        String[] tokens = str.toLowerCase().split(" ");
-        ArrayList<String> hashtags = new ArrayList<>();
+        String[] tokens = str.toLowerCase().split(" ");//сплитим строку
+        ArrayList<String> hashtags = new ArrayList<>(); // создаем массив хештешлв
 
-        while (hashtags.size() < 3) {
+        while (hashtags.size() < 3) { // пока не нашли 3 хештега
             double maxLength = Double.NEGATIVE_INFINITY;
             String word = "";
-            int idx = 0;
+            int idx = 0;//переменная самого длинного слова
 
             try {
-                for (int i = 0; i < tokens.length; i++) {
+                for (int i = 0; i < tokens.length; i++) {//ищем самое длинное слово
                     if (tokens[i].length() > maxLength) {
                         maxLength = tokens[i].length();
                         word = tokens[i];
@@ -198,73 +179,74 @@ eagle ➞ eagleyay
                     }
                 }
 
-                if (String.valueOf(word.charAt(word.length() - 1)).matches("[!?.,;:]")) {
+                if (String.valueOf(word.charAt(word.length() - 1)).matches("[!?.,;:]")) { // добавляем хештег в результат
                     hashtags.add("#" + word.substring(0, word.length() - 1));
                 } else {
                     hashtags.add("#" + word);
                 }
-                tokens[idx] = "";
+                tokens[idx] = ""; // удаляем хештег из массива
             } catch (StringIndexOutOfBoundsException e) {
-                return hashtags;
+                return hashtags;//если меньше 3 слов
             }
         }
 
-        return hashtags;
+        return hashtags; // вернуть хештеги
     }
 
-    public static int ulam (int n){
-        int[] arr = new int[n];
-        arr[0]=1;
+    public static int ulam (int n){ // последовательность улама
+        int[] arr = new int[n]; // массив
+        arr[0]=1; // первое и второе число
         arr[1]=2;
         int len=2, next=3;
 
-        while (next < Integer.MAX_VALUE && len < n){
-            int count = 0;
+        while (next < Integer.MAX_VALUE && len < n){ // ищем пока не найдем n-ное число
+            int count = 0; // кол-во найденных способов для составления числа
 
-            for (int i = 0; i < len; i++){
-                for (int j = len-1; j > i; j--){
-                    if (arr[i] + arr[j] == next && arr[i] != arr[j])
-                        count++;
-                    else if (count > 1)
+            for (int i = 0; i < len; i++){ // i < len идем до числа n
+                for (int j = len-1; j > i; j--){ // идем от числа n ///навстречу друг другу)0
+                    if (arr[i] + arr[j] == next && arr[i] != arr[j]) // если два числа не равны и их сумму равна сумме поиска
+                        count++; //кол-во ++
+                    else if (count > 1) // break
                         break;
                 }
 
-                if (count > 1)
+                if (count > 1)// break((((
                     break;
             }
-            if (count == 1) {
+            if (count == 1) {//если count==1 то добавить число в массив чисел Улама
                 arr[len] = next;
                 len++;
             }
-            next++;
+            next++;//следующее число........
         }
-        return arr[n-1];
+        return arr[n-1]; //возврат искомого числа Улама
     }
-
+/*Напишите функцию, которая возвращает самую длинную неповторяющуюся
+подстроку для строкового ввода.*/
     public static String longestNonrepeatingSubstring(String str){
         String substr = "";
         char [] chars = str.toCharArray();
         StringBuilder builder = new StringBuilder();
-
         for (char c : chars) {
             if (!builder.toString().contains(String.valueOf(c)))
                 builder.append(c);
             else {
-                if (builder.length() > substr.length()) {
-                    substr = builder.toString();
+                if (builder.length() > substr.length()) {//перешли на новую последовательность
+                    substr = builder.toString();//записываем ее если она длиннее предыдущей
                 }
-                builder = new StringBuilder("" + c);
+                builder = new StringBuilder("" + c); // билдер равен просто символу найденному последнему
             }
         }
 
-        str = builder.toString();
+        str = builder.toString();//преобразуем в строку
 
-        if (str.length() > substr.length())
+        if (str.length() > substr.length()) // если вся строка - одна последовательность
             substr = str;
 
         return substr;
     }
-
+/*Создайте функцию, которая принимает арабское число и преобразует его в римское
+число*/
     public static String convertToRoman (int num){
         StringBuilder roman = new StringBuilder();
 
@@ -338,32 +320,27 @@ eagle ➞ eagleyay
 
         return roman.toString();
     }
-
+/*Создайте функцию, которая принимает строку и возвращает true или false в
+зависимости от того, является ли формула правильной или нет*/
     public static boolean formula(String formula){
         String[] tokens = formula.split(" ");
         int ans = 0;
         int expectedResult = 0;
 
-        if (!Character.isDigit(tokens[0].charAt(0))) return false;
-        else ans = Integer.parseInt(tokens[0]);
-
+        if (!Character.isDigit(tokens[0].charAt(0))) return false;//проверка на число
+        else ans = Integer.parseInt(tokens[0]);//ans - первое число
         int i = 1;
-
-        while (!tokens[i].equals("=")) {
-            if (tokens[i].equals("+")){
-                ans += Integer.parseInt(tokens[i + 1]);
-            }
-            if (tokens[i].equals("-")){
-                ans -= Integer.parseInt(tokens[i + 1]);
-            }
-            if (tokens[i].equals("*")){
-                ans *= Integer.parseInt(tokens[i + 1]);
-            }
-            if (tokens[i].equals("/")){
-                ans /= Integer.parseInt(tokens[i + 1]);
-            }
-
-            i += 2;
+        if (tokens[i].equals("+")){ // второе слипнутое слово
+            ans += Integer.parseInt(tokens[i + 1]); // третье слипнутое слово
+        }
+        else if (tokens[i].equals("-")){
+            ans -= Integer.parseInt(tokens[i + 1]);
+        }
+        else if (tokens[i].equals("*")){
+            ans *= Integer.parseInt(tokens[i + 1]);
+        }
+        else if (tokens[i].equals("/")){
+            ans /= Integer.parseInt(tokens[i + 1]);
         }
 
         i = formula.indexOf('=');
@@ -380,22 +357,20 @@ eagle ➞ eagleyay
         StringBuffer buffer1 =new StringBuffer(num);
         StringBuffer buffer2 =new StringBuffer(num);
 
-        if (buffer1.length() % 2 != 0)
+        if (buffer1.length() % 2 != 0)//из примечания : числа всегда будут иметь четное количество цифр
             return false;
         else {
-            while (!isDescendant){
-                if(buffer1 != buffer1.reverse()){
+            while (!isDescendant){//пока не найдем палиндром
+                if(buffer1 != buffer1.reverse()){ // если число не палиндром
                     for(int i = 0; i < buffer1.length(); i += 2){
-                        int a = Integer.parseInt(String.valueOf(buffer1.charAt(i)));
+                        int a = Integer.parseInt(String.valueOf(buffer1.charAt(i))); /// 11|21|12|30  1+1 2+1 1+2 3+0 2330 ((( ->>>>
                         int b = Integer.parseInt(String.valueOf(buffer1.charAt(i + 1)));
                         buffer2.append(a + b);
+                        if ((a+b) < 11) return false;
                     }
-                }
-                else
-                    isDescendant = true;
+                } else isDescendant = true;
             }
         }
-
         return isDescendant;
     }
 }
