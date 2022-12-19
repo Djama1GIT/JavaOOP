@@ -363,7 +363,7 @@ eagle ➞ eagleyay
             while (!isDescendant){//пока не найдем палиндром
                 if(buffer1 != buffer1.reverse()){ // если число не палиндром
                     for(int i = 0; i < buffer1.length(); i += 2){
-                        int a = Integer.parseInt(String.valueOf(buffer1.charAt(i))); /// 11|21|12|30  1+1 2+1 1+2 3+0 2330 ((( ->>>>
+                        int a = Integer.parseInt(String.valueOf(buffer1.charAt(i))); /// 11|21|12|30  1+1 2+1 1+2 3+0 2333 ((( ->>>>
                         int b = Integer.parseInt(String.valueOf(buffer1.charAt(i + 1)));
                         buffer2.append(a + b);
                         if ((a+b) < 11) return false;
